@@ -1,0 +1,61 @@
+import java.util.Scanner;
+
+public class OptimalReplacement {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of frames: ");
+        int frames = scanner.nextInt();
+
+        System.out.print("Enter length of the reference string: ");
+        int refLength = scanner.nextInt();
+
+        int[] reference = new int[refLength];
+        int[] buffer = new int[frames];
+        boolean[] found;
+        int hit = 0, fault = 0;
+
+        for (int i = 0; i < frames; i++) buffer[i] = -1;
+
+        System.out.println("Enter the reference string:");
+        for (int i = 0; i < refLength; i++) reference[i] = scanner.nextInt();
+
+        for (int i = 0; i < refLength; i++) {
+            found = new boolean[frames];
+            int j, index = -1;
+
+            for (j = 0; j < frames; j++) {
+                if (buffer[j] == reference[i]) {
+                    hit++;
+                    found[j] = true;
+                    break;
+                }
+            }
+
+            if (j == frames) {
+                for (j = 0; j < frames; j++) {
+                    int k;
+                    if (!found[j]) {
+                        for (k = i + 1; k < refLength; k++) {
+                            if (buffer[j] == reference[k]) break;
+                        }
+                        if (k == refLength) {
+                            index = j;
+                            break;
+                        }
+                    }
+                }
+                if (index == -1) index = i % frames;
+
+                buffer[index] = reference[i];
+                fault++;
+            }
+            for (int x : buffer) System.out.print(x + " ");
+            System.out.println();
+        }
+
+        System.out.println("The number of Hits: " + hit);
+        System.out.println("Hit Ratio: " + (float) hit / refLength);
+        System.out.println("The number of Faults: " + fault);
+    }
+}
